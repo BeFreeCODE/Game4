@@ -10,14 +10,15 @@ public class EnemyManager : MonoBehaviour {
 	private int enemyMaxNum = 150;
 
 	private float curTime = 0f;
-	public  float renderTime = 1.0f;
+	public  float renderTime = 1.0f;        //생성시간
 	private float _x, _y;
 
-	public  float maxScale = 1.0f;
+	public  float maxScale = 1.0f;          //최대크기
 	private float scale = 0f;
 
 	public List<GameObject> enemyList = new List<GameObject> ();
 
+    public float smoothScaleSpeed;
 	void Awake()
 	{
 		if (instance == null)
@@ -26,13 +27,16 @@ public class EnemyManager : MonoBehaviour {
 
 	void Start () 
 	{
+        //시작할때 풀오브젝트 생성.
 		MakeEnemy ();
 	}
-	
-	void Update ()
+   
+    void Update ()
 	{
-		if(GameManager.instance.curState == GameState.game)
-			RenderEnemy ();
+        if (GameManager.instance.curState == GameState.game)
+        {
+            RenderEnemy();
+        }
 	}
 
 	//makeEneym & addlist
@@ -43,7 +47,7 @@ public class EnemyManager : MonoBehaviour {
 			GameObject newEnemy = Instantiate (enemyPrefab);
 			newEnemy.transform.parent = this.transform;
 			newEnemy.SetActive (false);
-
+            
 			enemyList.Add (newEnemy);
 		}
 	}
@@ -66,6 +70,7 @@ public class EnemyManager : MonoBehaviour {
 
 		if (curTime >= renderTime) 
 		{
+            //get enemy
 			GameObject renEnemy = GetEnemy ();
 
 			//_x,_y random
@@ -75,7 +80,7 @@ public class EnemyManager : MonoBehaviour {
 			renEnemy.transform.localScale = new Vector3 (scale, scale, 1f);
 
 			if (scale <= 0.5f) {
-				renEnemy.GetComponent<Enemy> ().moveSpeed = 0.8f;
+				renEnemy.GetComponent<Enemy> ().moveSpeed = 1.0f;
 			} else if (scale <= 1.0f) {
 				renEnemy.GetComponent<Enemy> ().moveSpeed = 0.6f;
 			} else if (scale <= 1.5f) {
@@ -95,7 +100,7 @@ public class EnemyManager : MonoBehaviour {
 		_x = 0f;
 		_y = 0f;
 
-		scale = Random.Range (0.4f, maxScale);
+		scale = Random.Range (0.5f, maxScale);
 
 		while (Mathf.Abs (_x) <= 3f && Mathf.Abs(_y) <= 3f) 
 		{
@@ -103,4 +108,12 @@ public class EnemyManager : MonoBehaviour {
 			_y = Random.Range (-5f, 5f);
 		}
 	}
+
+    public void AddScalingTarget(GameObject touchTarget)
+    {
+        float _touchPower = Player.instance.touchPower;
+
+        touchTarget.GetComponent<Enemy>().SetNewScale(_touchPower);
+        touchTarget.GetComponent<Enemy>().isScaling = true;
+    }
 }
