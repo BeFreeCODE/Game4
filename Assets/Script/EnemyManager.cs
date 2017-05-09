@@ -19,6 +19,7 @@ public class EnemyManager : MonoBehaviour {
 	public List<GameObject> enemyList = new List<GameObject> ();
 
     public float smoothScaleSpeed;
+
 	void Awake()
 	{
 		if (instance == null)
@@ -95,7 +96,7 @@ public class EnemyManager : MonoBehaviour {
 		}
 	}
 
-	void RandomPos()
+    void RandomPos()
 	{
 		_x = 0f;
 		_y = 0f;
@@ -109,6 +110,15 @@ public class EnemyManager : MonoBehaviour {
 		}
 	}
 
+    public void InitEnemys()
+    {
+        foreach(GameObject _enemy in enemyList)
+        {
+            _enemy.SetActive(false);
+            _enemy.transform.localScale = new Vector3(.5f, .5f, 1f);
+        }
+    }
+
     public void AddScalingTarget(GameObject touchTarget)
     {
         float _touchPower = Player.instance.touchPower;
@@ -116,4 +126,6 @@ public class EnemyManager : MonoBehaviour {
         touchTarget.GetComponent<Enemy>().SetNewScale(_touchPower);
         touchTarget.GetComponent<Enemy>().isScaling = true;
     }
+
+
 }

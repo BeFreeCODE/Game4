@@ -32,6 +32,7 @@ public class Enemy : MonoBehaviour {
             this.newScale = this.transform.localScale = new Vector3 (.5f, .5f, 1f);
 
             Player.instance.RotateSpeedUp();
+            GameManager.instance.PlusScore();
         }
 	}
 

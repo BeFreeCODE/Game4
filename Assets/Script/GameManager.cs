@@ -15,11 +15,19 @@ public class GameManager : MonoBehaviour
     private GameObject  touchTarget = null;
     public  GameState   curState = GameState.main;
     public  float       gameTime = 0f;
+    public int curScore;
+    public int topScore;
+
+    [SerializeField]
+    private GpgsMng gpgs;
+
 
     void Awake()
     {
         if (instance == null)
             instance = this;
+
+        DataManager.Instance.GetData();
     }
 
     void Update()
@@ -45,6 +53,8 @@ public class GameManager : MonoBehaviour
 
                 break;
             case GameState.over:
+                DataManager.Instance.SetData();
+                gpgs.ReportScore(topScore);
                 break;
         }
     }
@@ -113,7 +123,7 @@ public class GameManager : MonoBehaviour
 
         //생성쿨타임을 줄여줌.
         if (EnemyManager.instance.renderTime >= 0.5f)
-            EnemyManager.instance.renderTime -= 0.00002f;
+            EnemyManager.instance.renderTime -= 0.00005f;
 
         if (EnemyManager.instance.maxScale <= 5f)
             EnemyManager.instance.maxScale += 0.0001f;
@@ -126,5 +136,13 @@ public class GameManager : MonoBehaviour
         {
             curState = GameState.over;
         }
+    }
+
+    public void PlusScore()
+    {
+        curScore++;
+
+        if (curScore >= topScore)
+            topScore = curScore;
     }
 }

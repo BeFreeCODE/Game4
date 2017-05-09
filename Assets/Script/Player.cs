@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
     //스피드 다운.
     public void RotateSpeedDown()
     {
-        rotSpeed -= 40f;
+        rotSpeed -= 100f;
     }
 
     //웨이브 생성
