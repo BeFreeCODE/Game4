@@ -13,8 +13,12 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     private GameObject  touchTarget = null;
+    public GameObject player;
+
     public  GameState   curState = GameState.main;
+
     public  float       gameTime = 0f;
+
     public int curScore;
     public int topScore;
 
@@ -44,7 +48,7 @@ public class GameManager : MonoBehaviour
                 {
                     curState = GameState.game;
                 }
-
+                player.SetActive(true);
                 break;
             case GameState.game:
                 TouchEnemy();
@@ -125,8 +129,11 @@ public class GameManager : MonoBehaviour
         if (EnemyManager.instance.renderTime >= 0.5f)
             EnemyManager.instance.renderTime -= 0.00005f;
 
-        if (EnemyManager.instance.maxScale <= 5f)
+        if (EnemyManager.instance.maxScale <= 1.5f)
             EnemyManager.instance.maxScale += 0.0001f;
+
+        if (EnemyManager.instance.bossDelay >= 3f)
+            EnemyManager.instance.bossDelay -= 0.0001f;
     }
 
     void CheckSpeed()
@@ -135,6 +142,7 @@ public class GameManager : MonoBehaviour
         if (Player.instance.rotSpeed <= 0f)
         {
             curState = GameState.over;
+            Player.instance.PlayerDead();
         }
     }
 

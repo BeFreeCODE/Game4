@@ -10,11 +10,15 @@ public class EnemyManager : MonoBehaviour {
 	private int enemyMaxNum = 150;
 
 	private float curTime = 0f;
-	public  float renderTime = 1.0f;        //생성시간
-	private float _x, _y;
+	public  float renderTime = .7f;        //생성시간
+
+    private float _x, _y;                   //pos
 
 	public  float maxScale = 1.0f;          //최대크기
 	private float scale = 0f;
+
+    private float bossTime = 0f;
+    public float bossDelay = 5f;
 
 	public List<GameObject> enemyList = new List<GameObject> ();
 
@@ -68,6 +72,7 @@ public class EnemyManager : MonoBehaviour {
 	void RenderEnemy()
 	{
 		curTime += Time.deltaTime;
+        bossTime += Time.deltaTime;
 
 		if (curTime >= renderTime) 
 		{
@@ -78,22 +83,30 @@ public class EnemyManager : MonoBehaviour {
 			RandomPos ();
 
 			renEnemy.transform.position = new Vector3 (_x, _y, 0f);
-			renEnemy.transform.localScale = new Vector3 (scale, scale, 1f);
+			renEnemy.transform.localScale = new Vector3 (scale, scale, scale);
 
-			if (scale <= 0.5f) {
-				renEnemy.GetComponent<Enemy> ().moveSpeed = 1.0f;
-			} else if (scale <= 1.0f) {
-				renEnemy.GetComponent<Enemy> ().moveSpeed = 0.6f;
-			} else if (scale <= 1.5f) {
-				renEnemy.GetComponent<Enemy> ().moveSpeed = 0.4f;	
-			} else {
-				renEnemy.GetComponent<Enemy> ().moveSpeed = 0.2f;
-			}
+            renEnemy.GetComponent<Enemy>().moveSpeed = Random.Range(.1f, 1.0f);
 
 			renEnemy.SetActive (true);
 
 			curTime = 0f;
 		}
+
+        if(bossTime >= bossDelay)
+        {
+            GameObject bossEnemy = GetEnemy();
+
+            RandomPos();
+
+            bossEnemy.transform.position = new Vector3(_x, _y, 0f);
+            bossEnemy.transform.localScale = new Vector3(scale * 3.5f, scale * 3.5f, scale * 3.5f);
+
+            bossEnemy.GetComponent<Enemy>().moveSpeed = .2f;
+
+            bossEnemy.SetActive(true);
+
+            bossTime = 0f;
+        }
 	}
 
     void RandomPos()
@@ -117,6 +130,8 @@ public class EnemyManager : MonoBehaviour {
             _enemy.SetActive(false);
             _enemy.transform.localScale = new Vector3(.5f, .5f, 1f);
         }
+        maxScale = 1.0f;
+        renderTime = .6f;
     }
 
     public void AddScalingTarget(GameObject touchTarget)
