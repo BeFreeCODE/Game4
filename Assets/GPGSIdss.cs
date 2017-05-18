@@ -22,9 +22,14 @@
 ///
 
 
-public static class GPGSIds
+public static class GPGSIdss
 {
+        public const string achievement_100_score = "CgkIm73wv7IFEAIQAw"; // <GPGSID>
+        public const string achievement_60_score = "CgkIm73wv7IFEAIQAg"; // <GPGSID>
+        public const string achievement_160_score = "CgkIm73wv7IFEAIQBA"; // <GPGSID>
+        public const string achievement_1000_score = "CgkIm73wv7IFEAIQBg"; // <GPGSID>
         public const string leaderboard_best_score = "CgkIm73wv7IFEAIQAQ"; // <GPGSID>
+        public const string achievement_200_score = "CgkIm73wv7IFEAIQBQ"; // <GPGSID>
 
 }
 

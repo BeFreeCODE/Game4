@@ -41,8 +41,64 @@ public class GpgsMng : MonoBehaviour
 
     public void ReportScore(int score)
     {
-        Social.ReportScore(score, "CgkIm73wv7IFEAIQAQ", success => {
+        Social.ReportScore(score, "CgkIm73wv7IFEAIQAQ", success =>
+        {
             Debug.Log(success ? "Reported score successfully" : "Failed to report score");
         });
     }
+
+    public void ReportProgress(int score)
+    {
+        if (score >= 60)
+        {
+            Social.ReportProgress("CgkIm73wv7IFEAIQAg", 100.0, result =>
+            {
+                if (result)
+                    Debug.Log("Successfully reported achievement progress");
+                else
+                    Debug.Log("Failed to report achievement");
+            });
+        }
+        if(score >= 100)
+        {
+            Social.ReportProgress("CgkIm73wv7IFEAIQAw", 100.0, result =>
+            {
+                if (result)
+                    Debug.Log("Successfully reported achievement progress");
+                else
+                    Debug.Log("Failed to report achievement");
+            });
+        }
+        if (score >= 160)
+        {
+            Social.ReportProgress("CgkIm73wv7IFEAIQBA", 100.0, result =>
+            {
+                if (result)
+                    Debug.Log("Successfully reported achievement progress");
+                else
+                    Debug.Log("Failed to report achievement");
+            });
+        }
+        if (score >= 200)
+        {
+            Social.ReportProgress("CgkIm73wv7IFEAIQBQ", 100.0, result =>
+            {
+                if (result)
+                    Debug.Log("Successfully reported achievement progress");
+                else
+                    Debug.Log("Failed to report achievement");
+            });
+        }
+        if (score >= 1000)
+        {
+            Social.ReportProgress("CgkIm73wv7IFEAIQBg", 100.0, result =>
+            {
+                if (result)
+                    Debug.Log("Successfully reported achievement progress");
+                else
+                    Debug.Log("Failed to report achievement");
+            });
+        }
+    }
 }
+

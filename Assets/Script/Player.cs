@@ -12,8 +12,26 @@ public class Player : MonoBehaviour
     private bool waveState = false;
     public bool upState = false;
 
-    public GameObject wave;
     public GameObject frag;
+    public GameObject invert;
+
+    public Material playerMat;
+    public Material trailMat;
+
+    public GameObject effect;
+
+    private Color matColor;
+
+    //색변환
+    public void ChangeColor(Color _color, Color _emission)
+    {
+        playerMat.SetColor("_Color", _color);
+        playerMat.SetColor("_EmissionColor", _emission);
+
+        trailMat.SetColor("_TintColor", new Color(_color.r , _color.g , _color.b ));
+
+        matColor = _emission;
+    }
 
     void Awake()
     {
@@ -29,6 +47,11 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.instance.curState != GameState.game)
+        {
+            playerMat.SetColor("_EmissionColor", matColor);
+        }
+
         RotatePlayer(rotSpeed);
 
         //make wave
@@ -39,14 +62,16 @@ public class Player : MonoBehaviour
         }
         if (waveState)
         {
-            rotSpeed -= 200 * Time.deltaTime;
+            rotSpeed -= 500 * Time.deltaTime;
             if (rotSpeed <= 100f)
             {
                 rotSpeed = 100f;
                 waveState = false;
+                upState = false;
             }
         }
 
+        //속도 올려줌.
         if (upState)
         {
             rotSpeed += 2;
@@ -56,6 +81,16 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    private IEnumerator BlinkEffect()
+    {
+        playerMat.SetColor("_EmissionColor", new Color(0.8f, 0.8f, 0.8f));
+
+        yield return new WaitForSeconds(.1f);
+
+        playerMat.SetColor("_EmissionColor", matColor);
+    }
+
 
     //player 회전.
     private void RotatePlayer(float _speed)
@@ -68,6 +103,11 @@ public class Player : MonoBehaviour
     {
         curSpeed = rotSpeed + 20;
         upState = true;
+
+        GameObject newEffect = Instantiate(effect);
+        newEffect.transform.parent = this.transform;
+        newEffect.transform.rotation = this.transform.rotation;
+        newEffect.transform.position = this.transform.position + Vector3.forward;
     }
 
     //스피드 다운.
@@ -78,6 +118,8 @@ public class Player : MonoBehaviour
         {
             rotSpeed = 0;
         }
+
+        StartCoroutine(BlinkEffect());
     }
 
     public void PlayerDead()
@@ -90,8 +132,7 @@ public class Player : MonoBehaviour
     //웨이브 생성
     public void MakeWave()
     {
-        GameObject newWave = Instantiate(wave);
-        newWave.transform.position = Vector3.zero;
+        invert.GetComponent<Invert>().invertState = true;
 
     }
 }

@@ -6,8 +6,8 @@ public class Fragments : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        rb.AddForce(new Vector2(Random.Range(-50f, 50f),
-                                Random.Range(20f, 30f)));
+        rb.AddForce(new Vector3(Random.Range(-70f, 70f),
+                                Random.Range(-50f, 50f)));
         
 	}
 

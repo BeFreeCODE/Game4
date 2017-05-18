@@ -5,7 +5,11 @@ public class Wave : MonoBehaviour {
 
     public void Delete()
     {
-        Destroy(this.transform.gameObject);
+        this.gameObject.SetActive(false);
     }
 
+    public void DestroyThis()
+    {
+        Destroy(this.gameObject);
+    }
 }

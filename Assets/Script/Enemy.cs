@@ -5,8 +5,12 @@ public class Enemy : MonoBehaviour {
 	public float moveSpeed = 0.5f;
 
     public bool isScaling = false;
+
     private Vector3 newScale;
+
     private float smoothScaleSpeed = 10.0f;
+
+    public GameObject frag;
 
     void Update ()
     {
@@ -37,10 +41,12 @@ public class Enemy : MonoBehaviour {
 	{
 		if (this.transform.localScale.x <= 0.5f)
         {
-			this.gameObject.SetActive (false);
-            this.newScale = this.transform.localScale = new Vector3 (.5f, .5f, .5f);
+            GameObject newFrag = Instantiate(frag);
+            newFrag.transform.position = this.transform.position;
 
-            Player.instance.RotateSpeedUp();
+            this.gameObject.SetActive (false);
+            this.newScale = this.transform.localScale = new Vector3 (.5f, .5f, .5f);
+            
             GameManager.instance.PlusScore();
         }
 	}
@@ -55,7 +61,13 @@ public class Enemy : MonoBehaviour {
 		}
         if(col.transform.tag.Equals("Wave"))
         {
+            GameObject newFrag = Instantiate(frag);
+            newFrag.transform.position = this.transform.position;
+
             this.gameObject.SetActive(false);
+            this.newScale = this.transform.localScale = new Vector3(.5f, .5f, .5f);
+
+            GameManager.instance.PlusScore();
         }
 	}
 
