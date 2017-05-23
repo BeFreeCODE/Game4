@@ -48,6 +48,10 @@ public class Enemy : MonoBehaviour {
             this.newScale = this.transform.localScale = new Vector3 (.5f, .5f, .5f);
             
             GameManager.instance.PlusScore();
+
+            //combo Up
+            GameManager.instance.combo++;
+            GameManager.instance.uiManager.PrintComboLabel(GameManager.instance.combo);
         }
 	}
 
@@ -56,8 +60,12 @@ public class Enemy : MonoBehaviour {
 	{
 		if (col.transform.tag.Equals ("Player"))
         {
-            Player.instance.RotateSpeedDown();
-			this.gameObject.SetActive (false);
+            //플레이어 죽음.
+            Player.instance.PlayerDead();
+
+            GameManager.instance.curState = GameState.over;
+            
+            this.gameObject.SetActive (false);
 		}
         if(col.transform.tag.Equals("Wave"))
         {
@@ -66,6 +74,10 @@ public class Enemy : MonoBehaviour {
 
             this.gameObject.SetActive(false);
             this.newScale = this.transform.localScale = new Vector3(.5f, .5f, .5f);
+
+            //combo Up
+            GameManager.instance.combo++;
+            GameManager.instance.uiManager.PrintComboLabel(GameManager.instance.combo);
 
             GameManager.instance.PlusScore();
         }

@@ -82,6 +82,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    //깜빡임 이펙트
     private IEnumerator BlinkEffect()
     {
         playerMat.SetColor("_EmissionColor", new Color(0.8f, 0.8f, 0.8f));
@@ -90,7 +91,6 @@ public class Player : MonoBehaviour
 
         playerMat.SetColor("_EmissionColor", matColor);
     }
-
 
     //player 회전.
     private void RotatePlayer(float _speed)
@@ -105,6 +105,9 @@ public class Player : MonoBehaviour
         upState = true;
 
         GameObject newEffect = Instantiate(effect);
+
+        StartCoroutine(BlinkEffect());
+
         newEffect.transform.parent = this.transform;
         newEffect.transform.rotation = this.transform.rotation;
         newEffect.transform.position = this.transform.position + Vector3.forward;
@@ -113,17 +116,19 @@ public class Player : MonoBehaviour
     //스피드 다운.
     public void RotateSpeedDown()
     {
-        rotSpeed -= 100f;
+        rotSpeed -= 200f;
         if (rotSpeed <= 0)
         {
-            rotSpeed = 0;
+            rotSpeed = 1;
         }
 
-        StartCoroutine(BlinkEffect());
+        //StartCoroutine(BlinkEffect());
     }
 
     public void PlayerDead()
     {
+        rotSpeed = 0f;
+        
         Instantiate(frag);
 
         this.gameObject.SetActive(false);
@@ -134,5 +139,7 @@ public class Player : MonoBehaviour
     {
         invert.GetComponent<Invert>().invertState = true;
 
+        //웨이브 효과로 적 생성속도 느려짐
+        EnemyManager.instance.enemyMoveSpeed -= .5f;
     }
 }

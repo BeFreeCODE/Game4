@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    public UIManager uiManager;
+
     private GameObject  touchTarget = null;
     public  GameObject  player;
 
@@ -22,10 +24,10 @@ public class GameManager : MonoBehaviour
 
     public int curScore;
     public int topScore;
-
+    public int combo;
+    
     [SerializeField]
     private GpgsMng gpgs;
-
 
     //ColorSetting
     public int COLORNUM = 0;
@@ -43,6 +45,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         SetColor();
+
+        combo = 0;
     }
 
     void Update()
@@ -85,6 +89,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //적 터치~
     void TouchEnemy()
     {
 #if UNITY_ANDROID
@@ -113,6 +118,18 @@ public class GameManager : MonoBehaviour
                     if (hit.collider.transform.tag.Equals("Enemy"))
                     {
                         EnemyManager.instance.AddScalingTarget(touchTarget);
+
+                    }
+                    else
+                    {
+                        //combo init
+                        combo = 0;
+                        Player.instance.RotateSpeedDown();
+                        uiManager.PrintMissLabel(pos);
+
+                        uiManager.PrintMissLabel(_touch.position);
+                        //camera shake
+                        mainCam.GetComponent<CameraShake>().shake = 1;
                     }
                 }
             }
@@ -133,13 +150,24 @@ public class GameManager : MonoBehaviour
 
             touchTarget = hit.transform.gameObject;
 
+            Debug.Log("hit : " + touchTarget);
+
             //EnemyScale 줄임.
             if (hit.collider.transform.tag.Equals("Enemy"))
             {
-                EnemyManager.instance.AddScalingTarget(touchTarget);
+                EnemyManager.instance.AddScalingTarget(touchTarget); 
+            }
+            else
+            {
+                //combo init
+                combo = 0;
+                Player.instance.RotateSpeedDown();
+                uiManager.PrintMissLabel(Input.mousePosition);
+
+                //camera shake
+                mainCam.GetComponent<CameraShake>().shake = 1;
             }
         }
-
     }
 
     void GameTime()
@@ -156,6 +184,8 @@ public class GameManager : MonoBehaviour
 
         if (EnemyManager.instance.bossDelay >= 3f)
             EnemyManager.instance.bossDelay -= 0.0001f;
+
+        EnemyManager.instance.enemyMoveSpeed += 0.0005f;
     }
 
     void CheckSpeed()

@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class UIManager : MonoBehaviour {
+    public Camera uiCam;
+
     public UISprite gage;
     public UILabel score;
     public UILabel score2;
@@ -24,6 +26,9 @@ public class UIManager : MonoBehaviour {
     public GameObject storeUI;
 
     bool pauseState = false;
+    
+    public GameObject missLabel;
+    public GameObject comboLabel;
 
     private void Update()
     {
@@ -55,7 +60,8 @@ public class UIManager : MonoBehaviour {
             case GameState.over:
                 gameUI.SetActive(false);
                 overUI.SetActive(true);
-
+                
+                gage.fillAmount = (Player.instance.rotSpeed - 100) * 0.001f;
                 score2.text = GameManager.instance.curScore.ToString();
                 topScore2.text = GameManager.instance.topScore.ToString();
 
@@ -133,5 +139,32 @@ public class UIManager : MonoBehaviour {
     public void Store()
     {
         GameManager.instance.curState = GameState.store;
+    }
+
+    public void PrintMissLabel(Vector3 _pos)
+    {
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(_pos);
+
+        GameObject newlabel = Instantiate(missLabel);
+        newlabel.transform.parent = this.transform;
+        newlabel.transform.localScale = new Vector3(1, 1, 1);
+        newlabel.transform.position = uiCam.ScreenToWorldPoint( _pos);
+
+
+        newlabel.GetComponent<TweenPosition>().from = newlabel.transform.localPosition;
+        newlabel.GetComponent<TweenPosition>().to = newlabel.transform.localPosition + Vector3.up * 600;
+    }
+
+    public void PrintComboLabel(int _num)
+    {
+        GameObject newlabel = Instantiate(comboLabel);
+        newlabel.transform.parent = this.transform;
+        newlabel.transform.localScale = new Vector3(1, 1, 1);
+        newlabel.transform.position = Vector3.zero;
+
+        newlabel.GetComponent<UILabel>().text = "x" + _num;
+
+        newlabel.GetComponent<TweenPosition>().from = newlabel.transform.localPosition;
+        newlabel.GetComponent<TweenPosition>().to = newlabel.transform.localPosition + Vector3.up * 600;
     }
 }

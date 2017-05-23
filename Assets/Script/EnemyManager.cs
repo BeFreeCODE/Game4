@@ -11,7 +11,7 @@ public class EnemyManager : MonoBehaviour {
 
 	private float curTime = 0f;
 	public  float renderTime = .7f;        //생성시간
-
+    public  float enemyMoveSpeed = 1.0f;    //적 이동시간
     private float _x, _y;                   //pos
 
 	public  float maxScale = 1.0f;          //최대크기
@@ -85,7 +85,7 @@ public class EnemyManager : MonoBehaviour {
 			renEnemy.transform.position = new Vector3 (_x, _y, 0f);
 			renEnemy.transform.localScale = new Vector3 (scale, scale, scale);
 
-            renEnemy.GetComponent<Enemy>().moveSpeed = Random.Range(.1f, 1.0f);
+            renEnemy.GetComponent<Enemy>().moveSpeed = Random.Range(enemyMoveSpeed * 0.1f, enemyMoveSpeed);
 
 			renEnemy.SetActive (true);
 
@@ -114,7 +114,7 @@ public class EnemyManager : MonoBehaviour {
 		_x = 0f;
 		_y = 0f;
 
-		scale = Random.Range (0.5f, maxScale);
+		scale = Random.Range (0.8f, maxScale);
 
 		while (Mathf.Abs (_x) <= 3f && Mathf.Abs(_y) <= 3f) 
 		{
@@ -132,14 +132,15 @@ public class EnemyManager : MonoBehaviour {
         }
         maxScale = 1.0f;
         renderTime = .6f;
+        enemyMoveSpeed = 1f;
     }
 
     public void AddScalingTarget(GameObject touchTarget)
     {
         float _touchPower = Player.instance.touchPower;
 
-        touchTarget.GetComponent<Enemy>().SetNewScale(_touchPower);
-        touchTarget.GetComponent<Enemy>().isScaling = true;
+        touchTarget.transform.parent.GetComponent<Enemy>().SetNewScale(_touchPower);
+        touchTarget.transform.parent.GetComponent<Enemy>().isScaling = true;
     }
 
 
