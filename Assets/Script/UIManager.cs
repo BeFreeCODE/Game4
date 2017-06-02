@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class UIManager : MonoBehaviour {
+public class UIManager : MonoBehaviour
+{
     public Camera uiCam;
 
     public UISprite gage;
@@ -13,12 +14,21 @@ public class UIManager : MonoBehaviour {
     public UILabel topScore3;
     public UILabel title;
     public UILabel title2;
+    public UILabel title3;
+    public UILabel gem;
 
     public GameObject rankButton;
     public GameObject achiveButton;
     public GameObject homeButton;
+    public GameObject homeButton2;
+
     public GameObject pauseButton;
     public GameObject storeButton;
+    public GameObject giftButton;
+    public GameObject facebookButton;
+
+    public GameObject muteButton;
+    public GameObject soundButton;
 
     public GameObject mainUI;
     public GameObject gameUI;
@@ -26,9 +36,10 @@ public class UIManager : MonoBehaviour {
     public GameObject storeUI;
 
     bool pauseState = false;
-    
+
     public GameObject missLabel;
     public GameObject comboLabel;
+    public GameObject pausePop;
 
     private void Update()
     {
@@ -37,7 +48,7 @@ public class UIManager : MonoBehaviour {
 
     private void GameUI()
     {
-        switch(GameManager.instance.curState)
+        switch (GameManager.instance.curState)
         {
             case GameState.main:
                 mainUI.SetActive(true);
@@ -48,6 +59,13 @@ public class UIManager : MonoBehaviour {
                 topScore.text = GameManager.instance.topScore.ToString();
 
                 TweenInit();
+
+                title3.GetComponent<TweenPosition>().ResetToBeginning();
+                title3.GetComponent<TweenPosition>().Play();
+                homeButton2.GetComponent<TweenPosition>().ResetToBeginning();
+                homeButton2.GetComponent<TweenPosition>().Play();
+                giftButton.GetComponent<TweenScale>().ResetToBeginning();
+                giftButton.GetComponent<TweenScale>().Play();
                 break;
             case GameState.game:
                 mainUI.SetActive(false);
@@ -60,7 +78,7 @@ public class UIManager : MonoBehaviour {
             case GameState.over:
                 gameUI.SetActive(false);
                 overUI.SetActive(true);
-                
+
                 gage.fillAmount = (Player.instance.rotSpeed - 100) * 0.001f;
                 score2.text = GameManager.instance.curScore.ToString();
                 topScore2.text = GameManager.instance.topScore.ToString();
@@ -86,6 +104,7 @@ public class UIManager : MonoBehaviour {
                 storeButton.GetComponent<TweenAlpha>().Play();
                 break;
         }
+        gem.text = GameManager.instance.gem.ToString();
     }
 
     private void TweenInit()
@@ -105,6 +124,9 @@ public class UIManager : MonoBehaviour {
         achiveButton.GetComponent<TweenPosition>().ResetToBeginning();
         achiveButton.GetComponent<TweenPosition>().Play();
 
+        facebookButton.GetComponent<TweenPosition>().ResetToBeginning();
+        facebookButton.GetComponent<TweenPosition>().Play();
+
         topScore3.GetComponent<TweenPosition>().ResetToBeginning();
         topScore3.GetComponent<TweenPosition>().Play();
     }
@@ -113,14 +135,32 @@ public class UIManager : MonoBehaviour {
     {
         if (!pauseState)
         {
+            pauseButton.SetActive(false);
+            pausePop.SetActive(true);
             Time.timeScale = 0f;
             pauseState = true;
         }
-        else
-        {
-            Time.timeScale = 1f;
-            pauseState = false;
-        }
+    }
+
+    public void RePlay()
+    {
+        pauseButton.SetActive(true);
+        pausePop.SetActive(false);
+        Time.timeScale = 1f;
+        pauseState = false;
+
+    }
+
+    public void MuteButton()
+    {
+        soundButton.SetActive(true);
+        muteButton.SetActive(false);
+    }
+
+    public void SoundButton()
+    {
+        soundButton.SetActive(false);
+        muteButton.SetActive(true);
     }
 
     public void Home()
@@ -133,12 +173,25 @@ public class UIManager : MonoBehaviour {
 
         //data init;
         GameManager.instance.curScore = 0;
+        GameManager.instance.combo = 0;
         GameManager.instance.curState = GameState.main;
     }
 
     public void Store()
     {
         GameManager.instance.curState = GameState.store;
+    }
+
+    public void Facebook()
+    {
+        Application.OpenURL("https://www.facebook.com/60Celsius/?fref=ts");
+    }
+
+    public void Share()
+    {
+        Share share = new Share();
+
+        share.shareText("r o t t a n g l e\n", "Can U Do This??\n" + GameManager.instance.topScore + "\nURL");
     }
 
     public void PrintMissLabel(Vector3 _pos)
@@ -148,7 +201,7 @@ public class UIManager : MonoBehaviour {
         GameObject newlabel = Instantiate(missLabel);
         newlabel.transform.parent = this.transform;
         newlabel.transform.localScale = new Vector3(1, 1, 1);
-        newlabel.transform.position = uiCam.ScreenToWorldPoint( _pos);
+        newlabel.transform.position = uiCam.ScreenToWorldPoint(_pos);
 
 
         newlabel.GetComponent<TweenPosition>().from = newlabel.transform.localPosition;
@@ -159,7 +212,12 @@ public class UIManager : MonoBehaviour {
     {
         GameObject newlabel = Instantiate(comboLabel);
         newlabel.transform.parent = this.transform;
+
         newlabel.transform.localScale = new Vector3(1, 1, 1);
+        if (_num % 50 == 0)
+        {
+            newlabel.transform.localScale = new Vector3(2, 2, 2);
+        }
         newlabel.transform.position = Vector3.zero;
 
         newlabel.GetComponent<UILabel>().text = "x" + _num;

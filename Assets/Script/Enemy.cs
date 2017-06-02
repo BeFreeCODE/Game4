@@ -41,6 +41,8 @@ public class Enemy : MonoBehaviour {
 	{
 		if (this.transform.localScale.x <= 0.5f)
         {
+            SoundManager.instance.PlayEffectSound(0);
+
             GameObject newFrag = Instantiate(frag);
             newFrag.transform.position = this.transform.position;
 
@@ -48,10 +50,8 @@ public class Enemy : MonoBehaviour {
             this.newScale = this.transform.localScale = new Vector3 (.5f, .5f, .5f);
             
             GameManager.instance.PlusScore();
-
             //combo Up
-            GameManager.instance.combo++;
-            GameManager.instance.uiManager.PrintComboLabel(GameManager.instance.combo);
+            GameManager.instance.PlusCombo();
         }
 	}
 
@@ -76,8 +76,7 @@ public class Enemy : MonoBehaviour {
             this.newScale = this.transform.localScale = new Vector3(.5f, .5f, .5f);
 
             //combo Up
-            GameManager.instance.combo++;
-            GameManager.instance.uiManager.PrintComboLabel(GameManager.instance.combo);
+            GameManager.instance.PlusCombo();
 
             GameManager.instance.PlusScore();
         }

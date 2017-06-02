@@ -15,23 +15,27 @@ public class GameManager : MonoBehaviour
 
     public UIManager uiManager;
 
-    private GameObject  touchTarget = null;
-    public  GameObject  player;
+    private GameObject touchTarget = null;
+    public GameObject player;
 
-    public  GameState   curState = GameState.main;
+    public GameState curState = GameState.main;
 
-    public  float       gameTime = 0f;
+    public float gameTime = 0f;
 
     public int curScore;
     public int topScore;
     public int combo;
-    
+    public int gem;
+
+    public GameObject gemObj;
+
     [SerializeField]
     private GpgsMng gpgs;
 
     //ColorSetting
     public int COLORNUM = 0;
     public Material enemyMat;
+    public Material enemyBossMat;
     public Camera mainCam;
 
     void Awake()
@@ -40,10 +44,6 @@ public class GameManager : MonoBehaviour
             instance = this;
 
         DataManager.Instance.GetData();
-    }
-
-    void Start()
-    {
         SetColor();
 
         combo = 0;
@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
         switch (curState)
         {
             case GameState.main:
-                if(Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0))
                 {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -67,14 +67,17 @@ public class GameManager : MonoBehaviour
 
                     if (Physics.Raycast(ray.origin, ray.direction * 10, out hit))
                     {
-                        if (hit.collider.name.Equals("col"))
+                        if (hit.collider.name.Equals("Start"))
                         {
+                            SoundManager.instance.PlayEffectSound(3);
+                            SoundManager.instance.ChangeBGM(COLORNUM);
+                            SoundManager.instance.PlayBGM();
                             curState = GameState.game;
                         }
                     }
                 }
                 player.SetActive(true);
-                
+
                 break;
             case GameState.game:
                 TouchEnemy();
@@ -82,6 +85,8 @@ public class GameManager : MonoBehaviour
                 CheckSpeed();
                 break;
             case GameState.over:
+                SoundManager.instance.StopBGM();
+
                 DataManager.Instance.SetData();
                 gpgs.ReportScore(topScore);
                 gpgs.ReportProgress(topScore);
@@ -114,13 +119,22 @@ public class GameManager : MonoBehaviour
 
                     touchTarget = hit.transform.gameObject;
 
+
                     //EnemyScale 줄임.
                     if (hit.collider.transform.tag.Equals("Enemy"))
                     {
                         EnemyManager.instance.AddScalingTarget(touchTarget);
-
                     }
-                    else
+                    else if (hit.collider.transform.tag.Equals("Gem"))
+                    {
+                        touchTarget.GetComponent<TweenPosition>().enabled = true;
+                        touchTarget.GetComponent<TweenScale>().enabled = true;
+
+                        SoundManager.instance.PlayEffectSound(1);
+                    }
+                    else if (touchTarget.name != "Pause"
+                        && touchTarget.name != "SoundButton"
+                        && touchTarget.name != "ReplayButton")
                     {
                         //combo init
                         combo = 0;
@@ -150,14 +164,22 @@ public class GameManager : MonoBehaviour
 
             touchTarget = hit.transform.gameObject;
 
-            Debug.Log("hit : " + touchTarget);
-
             //EnemyScale 줄임.
             if (hit.collider.transform.tag.Equals("Enemy"))
             {
-                EnemyManager.instance.AddScalingTarget(touchTarget); 
+                EnemyManager.instance.AddScalingTarget(touchTarget);
             }
-            else
+            else if (hit.collider.transform.tag.Equals("Gem"))
+            {
+                touchTarget.GetComponent<TweenPosition>().enabled = true;
+                touchTarget.GetComponent<TweenScale>().enabled = true;
+
+                SoundManager.instance.PlayEffectSound(1);
+            }
+            //빈곳 터치
+            else if (touchTarget.name != "Pause"
+                    && touchTarget.name != "SoundButton"
+                    && touchTarget.name != "ReplayButton")
             {
                 //combo init
                 combo = 0;
@@ -193,8 +215,29 @@ public class GameManager : MonoBehaviour
         //GAME OVER
         if (Player.instance.rotSpeed <= 0f)
         {
+            
             curState = GameState.over;
             Player.instance.PlayerDead();
+        }
+    }
+
+    void MakeGem()
+    {
+        if ((combo % 50) == 0)
+        {
+            SoundManager.instance.PlayEffectSound(2);
+
+            for (int i = 0; i < (combo / 50); i++)
+            {
+                GameObject newGem = Instantiate(gemObj);
+                float x, y;
+
+
+                x = Random.Range(-2.5f, 2.5f);
+                y = Random.Range(-3f, 3f);
+
+                newGem.transform.position = new Vector3(x, y, -1);
+            }
         }
     }
 
@@ -206,43 +249,61 @@ public class GameManager : MonoBehaviour
             topScore = curScore;
     }
 
+    public void PlusGem()
+    {
+        gem++;
+    }
+
+    public void PlusCombo()
+    {
+        combo++;
+        uiManager.PrintComboLabel(GameManager.instance.combo);
+
+        MakeGem();
+    }
+
     void SetColor()
     {
         COLORNUM = PlayerPrefs.GetInt("COLORNUM");
-
-        switch(COLORNUM)
+        switch (COLORNUM)
         {
             case 1:
-                Player.instance.ChangeColor(new Color(255f/255f, 0f, 0f, 255f/255f), new Color(0.2f, 0f, 0f));
-                GameManager.instance.enemyMat.SetColor("_Color", new Color(0f / 255f, 160f / 255f, 255f / 255f, 255f / 255f));
-                GameManager.instance.mainCam.backgroundColor = new Color(0f, 0f, 0f, 0f);
+                Player.instance.ChangeColor(new Color(255f / 255f, 0f, 0f, 255f / 255f), new Color(0.2f, 0f, 0f));
+                enemyMat.SetColor("_Color", new Color(0f / 255f, 160f / 255f, 255f / 255f, 255f / 255f));
+                enemyBossMat.SetColor("_Color", new Color(0f / 255f, 160f * 0.3f / 255f, 255f / 255f, 255f / 255f));
+                mainCam.backgroundColor = new Color(0f, 0f, 0f, 0f);
                 break;
             case 2:
-                Player.instance.ChangeColor(new Color(166f/255f, 20f/255f, 47f/255f, 255f/255f), new Color(0.6f, 0.1f, 0.27f));
-                GameManager.instance.enemyMat.SetColor("_Color", new Color(217f / 255f, 54f / 255f, 84f / 255f, 255f / 255f));
-                GameManager.instance.mainCam.backgroundColor = new Color(217f/255f, 152f/255f, 115f/255f, 0f);
+                Player.instance.ChangeColor(new Color(166f / 255f, 20f / 255f, 47f / 255f, 255f / 255f), new Color(0.6f, 0.1f, 0.27f));
+                enemyMat.SetColor("_Color", new Color(217f / 255f, 54f / 255f, 84f / 255f, 255f / 255f));
+                enemyBossMat.SetColor("_Color", new Color(217f / 255f, 54f * 0.3f / 255f, 255f / 255f, 255f / 255f));
+                mainCam.backgroundColor = new Color(217f / 255f, 152f / 255f, 115f / 255f, 0f);
                 break;
             case 3:
                 Player.instance.ChangeColor(new Color(255f / 255f, 97f / 255f, 56f / 255f, 255f / 255f), new Color(1f, 0.38f, 0.2f));
-                GameManager.instance.enemyMat.SetColor("_Color", new Color(0f, 163f / 255f, 136f / 255f, 255f / 255f));
-                GameManager.instance.mainCam.backgroundColor = new Color(121f / 255f, 189f / 255f, 143f / 255f, 0f);
+                enemyMat.SetColor("_Color", new Color(0f, 163f / 255f, 136f / 255f, 255f / 255f));
+                enemyBossMat.SetColor("_Color", new Color(0f, 163f * 0.3f / 136, 255f / 255f, 255f / 255f));
+                mainCam.backgroundColor = new Color(121f / 255f, 189f / 255f, 143f / 255f, 0f);
                 break;
             case 4:
                 Player.instance.ChangeColor(new Color(1f, 1f, 1f, 1f), new Color(0.4f, 0.4f, 0.4f));
-                GameManager.instance.enemyMat.SetColor("_Color", new Color(255f / 255f, 0f, 0f, 255f));
-                GameManager.instance.mainCam.backgroundColor = new Color(242f / 255f, 185f / 255f, 4f / 255f, 0f);
+                enemyMat.SetColor("_Color", new Color(0 / 255f, 0f, 0f, 255f));
+                enemyBossMat.SetColor("_Color", new Color(1f, 1f, 1f, 255f));
+                mainCam.backgroundColor = new Color(0 / 255f, 80f / 255f, 170f / 255f, 0f);
                 break;
             case 5:
                 Player.instance.ChangeColor(new Color(66f / 255f, 75f / 255f, 84f / 255f, 1f), new Color(0.25f, 0.3f, 0.3f));
-                GameManager.instance.enemyMat.SetColor("_Color", new Color(1f, 1f, 1f, 255f));
-                GameManager.instance.mainCam.backgroundColor = new Color(14f / 255f, 21f / 255f, 37f / 255f, 0f);
+                enemyMat.SetColor("_Color", new Color(1f, 1f, 1f, 255f));
+                enemyBossMat.SetColor("_Color", new Color(1f, 0.3f, 1f, 255f));
+                mainCam.backgroundColor = new Color(14f / 255f, 21f / 255f, 37f / 255f, 0f);
                 break;
             case 6:
                 Player.instance.ChangeColor(new Color(243f / 255f, 203f / 255f, 73f / 255f, 1f), new Color(0.96f, 0.6f, 0.2f));
-                GameManager.instance.enemyMat.SetColor("_Color", new Color(117f / 255f, 66f / 255f, 47f / 255f, 255f / 255f));
-                GameManager.instance.mainCam.backgroundColor = new Color(157f / 255f, 17f / 255f, 20f / 255f, 0f);
+                enemyMat.SetColor("_Color", new Color(117f / 255f, 66f / 255f, 47f / 255f, 255f / 255f));
+                enemyBossMat.SetColor("_Color", new Color(117f / 255f, 66f * .3f / 255f, 47f / 255f, 255f / 255f));
+                mainCam.backgroundColor = new Color(157f / 255f, 17f / 255f, 20f / 255f, 0f);
                 break;
-
         }
     }
+
 }

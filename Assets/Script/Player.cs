@@ -58,11 +58,15 @@ public class Player : MonoBehaviour
         if (rotSpeed >= 1100 && !waveState)
         {
             MakeWave();
+
+            //BGM 느려짐
+            SoundManager.instance.SlowBGM();
             waveState = true;
         }
         if (waveState)
         {
             rotSpeed -= 500 * Time.deltaTime;
+
             if (rotSpeed <= 100f)
             {
                 rotSpeed = 100f;
@@ -101,7 +105,7 @@ public class Player : MonoBehaviour
     //회전 스피드업.
     public void RotateSpeedUp()
     {
-        curSpeed = rotSpeed + 20;
+        curSpeed = rotSpeed + 10;
         upState = true;
 
         GameObject newEffect = Instantiate(effect);
@@ -121,12 +125,12 @@ public class Player : MonoBehaviour
         {
             rotSpeed = 1;
         }
-
-        //StartCoroutine(BlinkEffect());
     }
 
     public void PlayerDead()
     {
+        SoundManager.instance.PlayEffectSound(4);
+
         rotSpeed = 0f;
         
         Instantiate(frag);
@@ -140,6 +144,9 @@ public class Player : MonoBehaviour
         invert.GetComponent<Invert>().invertState = true;
 
         //웨이브 효과로 적 생성속도 느려짐
+        if (EnemyManager.instance.enemyMoveSpeed <= 1f)
+            return;
+
         EnemyManager.instance.enemyMoveSpeed -= .5f;
     }
 }

@@ -13,6 +13,9 @@ public class EnemyFrag : MonoBehaviour
         {
             this.transform.position = Vector3.MoveTowards(this.transform.position, Vector3.zero, 10f * Time.deltaTime);
         }
+
+        if(GameManager.instance.curState == GameState.over)
+            Destroy(this.gameObject);
     }
 
     void OnTriggerEnter2D(Collider2D col)

@@ -22,6 +22,9 @@ public class CameraShake : MonoBehaviour
         {
             camTransform = GetComponent(typeof(Transform)) as Transform;
         }
+
+        //화면잠금방지
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
 
     void OnEnable()

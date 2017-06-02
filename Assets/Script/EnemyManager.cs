@@ -24,6 +24,8 @@ public class EnemyManager : MonoBehaviour {
 
     public float smoothScaleSpeed;
 
+    public GameObject bossObj;
+
 	void Awake()
 	{
 		if (instance == null)
@@ -94,7 +96,7 @@ public class EnemyManager : MonoBehaviour {
 
         if(bossTime >= bossDelay)
         {
-            GameObject bossEnemy = GetEnemy();
+            GameObject bossEnemy = Instantiate(bossObj);
 
             RandomPos();
 
@@ -116,7 +118,7 @@ public class EnemyManager : MonoBehaviour {
 
 		scale = Random.Range (0.8f, maxScale);
 
-		while (Mathf.Abs (_x) <= 3f && Mathf.Abs(_y) <= 3f) 
+		while (Mathf.Abs (_x) <= 4f && Mathf.Abs(_y) <= 4f) 
 		{
 			_x = Random.Range (-3f, 3f);
 			_y = Random.Range (-5f, 5f);

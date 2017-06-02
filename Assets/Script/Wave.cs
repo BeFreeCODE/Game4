@@ -12,4 +12,9 @@ public class Wave : MonoBehaviour {
     {
         Destroy(this.gameObject);
     }
+
+    public void PlusGem()
+    {
+        GameManager.instance.PlusGem();
+    }
 }
