@@ -84,6 +84,9 @@ public class SoundManager : MonoBehaviour
     {
         switch (_num)
         {
+            case 0:
+                return bgm[0];
+                break;
             case 1:
                 return bgm[0];
                 break;

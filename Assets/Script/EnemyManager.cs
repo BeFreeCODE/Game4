@@ -129,8 +129,8 @@ public class EnemyManager : MonoBehaviour {
     {
         foreach(GameObject _enemy in enemyList)
         {
+            _enemy.transform.localScale = new Vector3(.6f, .6f, 1f);
             _enemy.SetActive(false);
-            _enemy.transform.localScale = new Vector3(.5f, .5f, 1f);
         }
         maxScale = 1.0f;
         renderTime = .6f;
