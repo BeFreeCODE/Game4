@@ -90,7 +90,7 @@ public class Present : MonoBehaviour
                             + (59 - timeCalSecond).ToString();
 
         //시간차가 0보다 작을때(GIFT활성화)
-        if((60-timeCalMinute) <= 0 || timeCal.Hours >= 1)
+        if((60-timeCalMinute) <= 0 || timeCal.Hours >= 1 || timeCal.Days >= 1)
         {
             pState = 0;
             PlayerPrefs.SetInt("PSTATE", pState);

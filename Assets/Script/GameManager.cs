@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public int gem;
 
     public GameObject gemObj;
+    public GameObject touchEffect;
 
     [SerializeField]
     private GpgsMng gpgs;
@@ -94,6 +95,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void RendTouchEffect(Vector2 _pos)
+    {
+        GameObject tEffect = Instantiate(touchEffect);
+        tEffect.transform.position = new Vector3( _pos.x,_pos.y,-5f);
+    }
+
     //적 터치~
     void TouchEnemy()
     {
@@ -119,6 +126,8 @@ public class GameManager : MonoBehaviour
 
                     touchTarget = hit.transform.gameObject;
 
+                    //touchEffect
+                    RendTouchEffect(pos);
 
                     //EnemyScale 줄임.
                     if (hit.collider.transform.tag.Equals("Enemy"))
@@ -163,6 +172,9 @@ public class GameManager : MonoBehaviour
                 return;
 
             touchTarget = hit.transform.gameObject;
+            
+            //touchEffect
+            RendTouchEffect(pos);
 
             //EnemyScale 줄임.
             if (hit.collider.transform.tag.Equals("Enemy"))
