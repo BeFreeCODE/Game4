@@ -12,8 +12,21 @@ public class Enemy : MonoBehaviour {
 
     public GameObject frag;
 
+    [SerializeField]
+    private MeshRenderer myMat;
+    [SerializeField]
+    private Material newMat;
+
+
+    private void OnEnable()
+    {
+        isScaling = false;
+    }
+
     void Update ()
     {
+        if (GameManager.instance == null)
+            return;
 
         if (GameManager.instance.curState == GameState.game)
         {
@@ -25,6 +38,7 @@ public class Enemy : MonoBehaviour {
         {
             SetNewScale(this.transform.localScale.x);
             isScaling = true;
+            OffEnemy();
             SmoothScale();
         }
 	}
@@ -38,20 +52,34 @@ public class Enemy : MonoBehaviour {
 
 	//Enemy Off
 	void OffEnemy()
-	{
-		if (this.transform.localScale.x <= 0.5f)
+    {
+        if (this.transform.localScale.x <= 0.5f && isScaling)
         {
+            if (GameManager.instance.curState == GameState.over)
+            {
+                this.gameObject.SetActive(false);
+                this.newScale = this.transform.localScale = new Vector3(.5f, .5f, .5f);
+                return;
+            }
             SoundManager.instance.PlayEffectSound(0);
 
             GameObject newFrag = Instantiate(frag);
             newFrag.transform.position = this.transform.position;
 
-            this.gameObject.SetActive (false);
-            this.newScale = this.transform.localScale = new Vector3 (.5f, .5f, .5f);
-            
+            this.gameObject.SetActive(false);
+            this.newScale = this.transform.localScale = new Vector3(.5f, .5f, .5f);
+
             GameManager.instance.PlusScore();
             //combo Up
             GameManager.instance.PlusCombo();
+        }
+
+        if (this.transform.localScale.x < 1.5f)
+        {
+            if (myMat != null)
+            {
+                myMat.material = newMat;
+            }
         }
 	}
 

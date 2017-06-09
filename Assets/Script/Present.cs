@@ -40,6 +40,9 @@ public class Present : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.instance == null)
+            return;
+
         if (GameManager.instance.curState == GameState.over)
         {
             if (pState == 1)

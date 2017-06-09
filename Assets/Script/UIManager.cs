@@ -21,7 +21,8 @@ public class UIManager : MonoBehaviour
     public GameObject achiveButton;
     public GameObject homeButton;
     public GameObject homeButton2;
-
+    public GameObject shareButton;
+    
     public GameObject pauseButton;
     public GameObject storeButton;
     public GameObject giftButton;
@@ -129,6 +130,9 @@ public class UIManager : MonoBehaviour
 
         topScore3.GetComponent<TweenPosition>().ResetToBeginning();
         topScore3.GetComponent<TweenPosition>().Play();
+
+        shareButton.GetComponent<TweenPosition>().ResetToBeginning();
+        shareButton.GetComponent<TweenPosition>().Play();
     }
 
     public void Pause()

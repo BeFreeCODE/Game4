@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
     public Material enemyBossMat;
     public Camera mainCam;
 
+    public int gameCount = 0;
+
     void Awake()
     {
         if (instance == null)
@@ -70,6 +72,9 @@ public class GameManager : MonoBehaviour
                     {
                         if (hit.collider.name.Equals("Start"))
                         {
+                            //전면광고용도의 게임카운트.
+                            gameCount++;
+
                             SoundManager.instance.PlayEffectSound(3);
                             SoundManager.instance.ChangeBGM(COLORNUM);
                             SoundManager.instance.PlayBGM();
@@ -79,6 +84,12 @@ public class GameManager : MonoBehaviour
                 }
                 player.SetActive(true);
 
+                //메인화면에서 뒤로가기 종료.
+                if(Input.GetKeyDown(KeyCode.Escape))
+                {
+                    DataManager.Instance.SetData();
+                    Application.Quit();
+                }
                 break;
             case GameState.game:
                 TouchEnemy();
@@ -91,6 +102,8 @@ public class GameManager : MonoBehaviour
                 DataManager.Instance.SetData();
                 gpgs.ReportScore(topScore);
                 gpgs.ReportProgress(topScore);
+
+                player.transform.localScale = new Vector3(.5f, .5f, .5f);
                 break;
         }
     }
@@ -153,6 +166,9 @@ public class GameManager : MonoBehaviour
                         uiManager.PrintMissLabel(_touch.position);
                         //camera shake
                         mainCam.GetComponent<CameraShake>().shake = 1;
+
+                        //미스시에 패널티
+                        player.GetComponent<Player>().PlayerScaleUp();
                     }
                 }
             }
@@ -200,6 +216,10 @@ public class GameManager : MonoBehaviour
 
                 //camera shake
                 mainCam.GetComponent<CameraShake>().shake = 1;
+
+
+                //미스시에 패널티
+                player.GetComponent<Player>().PlayerScaleUp();
             }
         }
     }
@@ -235,21 +255,19 @@ public class GameManager : MonoBehaviour
 
     void MakeGem()
     {
-        if ((combo % 50) == 0)
+        if ((combo % 20) == 0)
         {
             SoundManager.instance.PlayEffectSound(2);
 
-            for (int i = 0; i < (combo / 50); i++)
-            {
+
                 GameObject newGem = Instantiate(gemObj);
                 float x, y;
-
 
                 x = Random.Range(-2.5f, 2.5f);
                 y = Random.Range(-3f, 3f);
 
                 newGem.transform.position = new Vector3(x, y, -1);
-            }
+            
         }
     }
 

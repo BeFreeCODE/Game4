@@ -40,6 +40,9 @@ public class EnemyManager : MonoBehaviour {
    
     void Update ()
 	{
+        if (GameManager.instance == null)
+            return;
+
         if (GameManager.instance.curState == GameState.game)
         {
             RenderEnemy();
@@ -82,16 +85,16 @@ public class EnemyManager : MonoBehaviour {
 			GameObject renEnemy = GetEnemy ();
 
 			//_x,_y random
-			RandomPos ();
+			RandomPos();
 
 			renEnemy.transform.position = new Vector3 (_x, _y, 0f);
 			renEnemy.transform.localScale = new Vector3 (scale, scale, scale);
 
             renEnemy.GetComponent<Enemy>().moveSpeed = Random.Range(enemyMoveSpeed * 0.1f, enemyMoveSpeed);
 
-			renEnemy.SetActive (true);
+            renEnemy.SetActive(true);
 
-			curTime = 0f;
+            curTime = 0f;
 		}
 
         if(bossTime >= bossDelay)
@@ -127,11 +130,13 @@ public class EnemyManager : MonoBehaviour {
 
     public void InitEnemys()
     {
-        foreach(GameObject _enemy in enemyList)
+        foreach (GameObject _enemy in enemyList)
         {
-            _enemy.transform.localScale = new Vector3(.6f, .6f, 1f);
+            _enemy.GetComponent<Enemy>().isScaling = false;
+            _enemy.transform.localScale = new Vector3(.5f, .5f, .5f);
             _enemy.SetActive(false);
         }
+
         maxScale = 1.0f;
         renderTime = .6f;
         enemyMoveSpeed = 1f;
@@ -144,6 +149,4 @@ public class EnemyManager : MonoBehaviour {
         touchTarget.transform.parent.GetComponent<Enemy>().SetNewScale(_touchPower);
         touchTarget.transform.parent.GetComponent<Enemy>().isScaling = true;
     }
-
-
 }

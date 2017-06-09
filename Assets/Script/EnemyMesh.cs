@@ -13,7 +13,8 @@ public class EnemyMesh : MonoBehaviour {
                                            * _rotSpeed, Space.Self);
     }
 
-    void Update () {
+    void Update ()
+    {
         RotateEnemy(rotSpeed);
     }
 }

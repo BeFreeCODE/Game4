@@ -6,13 +6,11 @@ public class Admob : MonoBehaviour
 {
 	BannerView mBannerView = null; // 배너 출력
 	InterstitialAd mInterstitialAd = null; //전면광고
-
-	public string AndroidBannerViewKey; //AndroidBanner
+  
+    public string AndroidBannerViewKey; //AndroidBanner
 	public string AndroidInterstitialAdKey; //AndroidInterstitial
 	public string IOSBannerViewKey;
 	public string IOSInterstitialAdKey;
-
-
 
 	private string mBannerView_Key; // 배너 Key
 	private string mInterstitialAd_Key; //전면광고 Key
@@ -28,9 +26,6 @@ public class Admob : MonoBehaviour
 		mBannerView_Key = IOSBannerViewKey;
 		mInterstitialAd_Key = IOSInterstitialAdKey;
 #endif
-
-
-
 		DontDestroyOnLoad(this.gameObject);
        
         // BannerView(애드몹 사이트에 등록된 아이디, 크기, 위치) / AdSize.SmartBanner : 화면 해상도에 맞게 늘임, AdPosition.Bottom : 화면 바닥에 붙음
@@ -50,39 +45,41 @@ public class Admob : MonoBehaviour
         mBannerView.LoadAd(request); //배너 광고 요청
         mInterstitialAd.LoadAd(request);
 
-       
-       //InterstitialAd.OnAdClosed += OnAdClosed;
-
+        mInterstitialAd.OnAdClosed += OnAdClosed;
     }
-
-
-  //  private void OnAdClosed(object sender, System.EventArgs e)
-  //  {
-		//Debug.Log("adcloused : " + sender + " " + e);
-
-		//ReLoadInterstitialAd();
-
-  //  }
 
     void Start()
     {
         mBannerView.Show();  // 배너 광고 출력
     }
-    //void ReLoadInterstitialAd()
-    //{
-    //    mInterstitialAd.Destroy();
-    //    mInterstitialAd = new InterstitialAd(mInterstitialAd_Key);
 
-    //    AdRequest.Builder builder = new AdRequest.Builder();
-    //    AdRequest request = builder.AddTestDevice(AdRequest.TestDeviceSimulator).AddTestDevice(SEE_YOUR_LOGCAT_TO_GET_YOUR_DEVICE_ID).Build();
-    //    mInterstitialAd.LoadAd(request);
-    //    mInterstitialAd.OnAdClosed += OnAdClosed;
-    //}
-    //public void ShowInterstitialAd()
-    //{
-    //    if ((gameCount % 3) == 0)
-    //        mInterstitialAd.Show();
-    //    gameCount++;
-    //}
+    private void OnAdClosed(object sender, System.EventArgs e)
+    {
+        ReLoadInterstitialAd();
+        
+    }
 
+    void ReLoadInterstitialAd()
+    {
+        mInterstitialAd.Destroy();
+        mInterstitialAd = new InterstitialAd(mInterstitialAd_Key);
+
+        AdRequest.Builder builder = new AdRequest.Builder();
+        AdRequest request = builder.AddTestDevice(AdRequest.TestDeviceSimulator).AddTestDevice(SEE_YOUR_LOGCAT_TO_GET_YOUR_DEVICE_ID).Build();
+        //AdRequest request = builder.Build();
+        mInterstitialAd.LoadAd(request);
+        mInterstitialAd.OnAdClosed += OnAdClosed;
+    }
+
+    public void ShowAD()
+    {
+        if(GameManager.instance.gameCount % 3 == 0)
+        {
+            //전면광고 출력
+            if (mInterstitialAd.IsLoaded())
+            {
+                mInterstitialAd.Show();
+            }
+        }
+    }
 }

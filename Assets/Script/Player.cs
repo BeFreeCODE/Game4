@@ -105,7 +105,7 @@ public class Player : MonoBehaviour
     //회전 스피드업.
     public void RotateSpeedUp()
     {
-        curSpeed = rotSpeed + 10;
+        curSpeed = rotSpeed + 15;
         upState = true;
 
         GameObject newEffect = Instantiate(effect);
@@ -148,5 +148,14 @@ public class Player : MonoBehaviour
             return;
 
         EnemyManager.instance.enemyMoveSpeed -= .5f;
+    }
+
+
+    //플레이어 크기 Up
+    public void PlayerScaleUp()
+    {
+        this.transform.localScale = new Vector3(this.transform.localScale.x + 0.1f,
+                                                this.transform.localScale.y + 0.1f,
+                                                this.transform.localScale.z + 0.1f);
     }
 }
