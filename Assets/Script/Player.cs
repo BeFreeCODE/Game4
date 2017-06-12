@@ -67,6 +67,13 @@ public class Player : MonoBehaviour
         {
             rotSpeed -= 500 * Time.deltaTime;
 
+            if(this.transform.localScale.x > .5f)
+            {
+                this.transform.localScale = new Vector3(this.transform.localScale.x - (2f * Time.deltaTime),
+                                                        this.transform.localScale.y - (2f * Time.deltaTime),
+                                                        this.transform.localScale.z - (2f * Time.deltaTime));
+            }
+
             if (rotSpeed <= 100f)
             {
                 rotSpeed = 100f;
@@ -105,7 +112,7 @@ public class Player : MonoBehaviour
     //회전 스피드업.
     public void RotateSpeedUp()
     {
-        curSpeed = rotSpeed + 15;
+        curSpeed = rotSpeed + 20;
         upState = true;
 
         GameObject newEffect = Instantiate(effect);
@@ -134,6 +141,8 @@ public class Player : MonoBehaviour
         rotSpeed = 0f;
         
         Instantiate(frag);
+
+        this.transform.localScale = new Vector3(.5f, .5f, .5f);
 
         this.gameObject.SetActive(false);
     }

@@ -99,13 +99,22 @@ public class GameManager : MonoBehaviour
             case GameState.over:
                 SoundManager.instance.StopBGM();
 
-                DataManager.Instance.SetData();
-                gpgs.ReportScore(topScore);
-                gpgs.ReportProgress(topScore);
-
-                player.transform.localScale = new Vector3(.5f, .5f, .5f);
                 break;
         }
+    }
+
+    void OnGameOver()
+    {
+        curState = GameState.over;
+
+        Player.instance.PlayerDead();
+
+        DataManager.Instance.SetData();
+
+        gpgs.ReportScore(topScore);
+        gpgs.ReportProgress(topScore);
+
+        player.transform.localScale = new Vector3(.5f, .5f, .5f);
     }
 
     void RendTouchEffect(Vector2 _pos)
@@ -242,14 +251,13 @@ public class GameManager : MonoBehaviour
         EnemyManager.instance.enemyMoveSpeed += 0.0005f;
     }
 
+
     void CheckSpeed()
     {
         //GAME OVER
         if (Player.instance.rotSpeed <= 0f)
         {
-            
-            curState = GameState.over;
-            Player.instance.PlayerDead();
+            OnGameOver();
         }
     }
 
@@ -336,4 +344,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void OnApplicationQuit()
+    {
+        DataManager.Instance.SetData();
+    }
+    void OnApplicationPause()
+    {
+        DataManager.Instance.SetData();
+    }
 }

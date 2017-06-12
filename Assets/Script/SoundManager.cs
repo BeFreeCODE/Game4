@@ -14,7 +14,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     private AudioClip[] bgm = new AudioClip[6];
     [SerializeField]
-    private AudioClip[] effect = new AudioClip[7];
+    private AudioClip[] effect = new AudioClip[8];
 
     private int muteState = 0;
     public GameObject muteButton;

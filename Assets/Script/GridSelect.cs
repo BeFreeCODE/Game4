@@ -51,6 +51,8 @@ public class GridSelect : MonoBehaviour
     {
         if (GameManager.instance.gem >= 100)
         {
+            SoundManager.instance.PlayEffectSound(7);
+
             GameManager.instance.gem -= 100;
             BuyState[buyNum] = 1;
 
