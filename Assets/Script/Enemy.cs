@@ -107,6 +107,11 @@ public class Enemy : MonoBehaviour {
             GameManager.instance.PlusCombo();
 
             GameManager.instance.PlusScore();
+
+            //Make Gem
+            GameObject newGem = Instantiate(GameManager.instance.gemObj);
+            newGem.transform.position = this.transform.position;
+            SoundManager.instance.PlayEffectSound(2);
         }
 	}
 

@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
                 player.SetActive(true);
 
                 //메인화면에서 뒤로가기 종료.
-                if(Input.GetKeyDown(KeyCode.Escape))
+                if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     DataManager.Instance.SetData();
                     Application.Quit();
@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
     void RendTouchEffect(Vector2 _pos)
     {
         GameObject tEffect = Instantiate(touchEffect);
-        tEffect.transform.position = new Vector3( _pos.x,_pos.y,-5f);
+        tEffect.transform.position = new Vector3(_pos.x, _pos.y, -5f);
     }
 
     //적 터치~
@@ -197,7 +197,7 @@ public class GameManager : MonoBehaviour
                 return;
 
             touchTarget = hit.transform.gameObject;
-            
+
             //touchEffect
             RendTouchEffect(pos);
 
@@ -267,6 +267,8 @@ public class GameManager : MonoBehaviour
         {
             SoundManager.instance.PlayEffectSound(2);
 
+            for (int i = 0; i < combo / 20; i++)
+            {
 
                 GameObject newGem = Instantiate(gemObj);
                 float x, y;
@@ -275,7 +277,7 @@ public class GameManager : MonoBehaviour
                 y = Random.Range(-3f, 3f);
 
                 newGem.transform.position = new Vector3(x, y, -1);
-            
+            }
         }
     }
 

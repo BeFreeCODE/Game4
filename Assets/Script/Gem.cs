@@ -20,6 +20,13 @@ public class Gem : MonoBehaviour {
     void Update()
     {
         RotateGem();
-        
+        if( this.transform.localScale.x > 0f)
+        {
+            this.transform.localScale -= new Vector3(.1f, .1f, .1f) * Time.deltaTime;
+        }
+        else if( this.transform.localScale.x <= 0f)
+        {
+            Destroy(this.transform.parent.gameObject);
+        }
     }
 }

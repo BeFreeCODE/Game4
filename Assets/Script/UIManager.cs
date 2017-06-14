@@ -218,7 +218,7 @@ public class UIManager : MonoBehaviour
         newlabel.transform.parent = this.transform;
 
         newlabel.transform.localScale = new Vector3(1, 1, 1);
-        if (_num % 50 == 0)
+        if (_num % 20 == 0)
         {
             newlabel.transform.localScale = new Vector3(2, 2, 2);
         }
