@@ -42,6 +42,16 @@ public class UIManager : MonoBehaviour
     public GameObject comboLabel;
     public GameObject pausePop;
 
+    private void Start()
+    {
+        #if UNITY_IOS
+            rankButton.GetComponent<UIAnchor>().enabled = false;
+            homeButton.GetComponent<UIAnchor>().enabled = false;
+            achiveButton.GetComponent<UIAnchor>().enabled = false;
+            facebookButton.GetComponent<UIAnchor>().enabled = false;
+            shareButton.GetComponent<UIAnchor>().enabled = false;
+        #endif 
+    }
     private void Update()
     {
         GameUI();
@@ -195,7 +205,7 @@ public class UIManager : MonoBehaviour
     {
         Share share = new Share();
 
-        share.shareText("r o t t a n g l e\n", "Can U Do This??\n" + GameManager.instance.topScore + "\nURL");
+        share.shareText("r o t a n g l e\n", "Can U Do This??\n" + GameManager.instance.topScore);
     }
 
     public void PrintMissLabel(Vector3 _pos)

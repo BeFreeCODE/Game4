@@ -43,6 +43,9 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+#if UNITY_IOS
+		Application.targetFrameRate = 60;
+#endif
         if (instance == null)
             instance = this;
 
@@ -126,7 +129,56 @@ public class GameManager : MonoBehaviour
     //적 터치~
     void TouchEnemy()
     {
-#if UNITY_ANDROID
+ #if UNITY_EDITOR
+        if (Input.GetMouseButtonDown(0))
+        {
+            //클릭 했을때마다 touchPower 받아옴.
+            float _touchPower = Player.instance.touchPower;
+
+            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Ray2D ray = new Ray2D(pos, Vector2.zero);
+
+            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+
+            if (hit.transform == null)
+                return;
+
+            touchTarget = hit.transform.gameObject;
+
+            //touchEffect
+            RendTouchEffect(pos);
+
+            //EnemyScale 줄임.
+            if (hit.collider.transform.tag.Equals("Enemy"))
+            {
+                EnemyManager.instance.AddScalingTarget(touchTarget);
+            }
+            else if (hit.collider.transform.tag.Equals("Gem"))
+            {
+                touchTarget.GetComponent<TweenPosition>().enabled = true;
+                touchTarget.GetComponent<TweenScale>().enabled = true;
+
+                SoundManager.instance.PlayEffectSound(1);
+            }
+            //빈곳 터치
+            else if (touchTarget.name != "Pause"
+                    && touchTarget.name != "SoundButton"
+                    && touchTarget.name != "ReplayButton")
+            {
+                //combo init
+                combo = 0;
+                Player.instance.RotateSpeedDown();
+                uiManager.PrintMissLabel(Input.mousePosition);
+
+                //camera shake
+                mainCam.GetComponent<CameraShake>().shake = 1;
+
+
+                //미스시에 패널티
+                player.GetComponent<Player>().PlayerScaleUp();
+            }
+        }
+#elif UNITY_ANDROID || UNITY_IOS
         if (Input.touchCount > 0)
         {
             //클릭 했을때마다 touchPower 받아옴.
@@ -183,54 +235,6 @@ public class GameManager : MonoBehaviour
             }
         }
 #endif
-        if (Input.GetMouseButtonDown(0))
-        {
-            //클릭 했을때마다 touchPower 받아옴.
-            float _touchPower = Player.instance.touchPower;
-
-            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Ray2D ray = new Ray2D(pos, Vector2.zero);
-
-            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
-
-            if (hit.transform == null)
-                return;
-
-            touchTarget = hit.transform.gameObject;
-
-            //touchEffect
-            RendTouchEffect(pos);
-
-            //EnemyScale 줄임.
-            if (hit.collider.transform.tag.Equals("Enemy"))
-            {
-                EnemyManager.instance.AddScalingTarget(touchTarget);
-            }
-            else if (hit.collider.transform.tag.Equals("Gem"))
-            {
-                touchTarget.GetComponent<TweenPosition>().enabled = true;
-                touchTarget.GetComponent<TweenScale>().enabled = true;
-
-                SoundManager.instance.PlayEffectSound(1);
-            }
-            //빈곳 터치
-            else if (touchTarget.name != "Pause"
-                    && touchTarget.name != "SoundButton"
-                    && touchTarget.name != "ReplayButton")
-            {
-                //combo init
-                combo = 0;
-                Player.instance.RotateSpeedDown();
-                uiManager.PrintMissLabel(Input.mousePosition);
-
-                //camera shake
-                mainCam.GetComponent<CameraShake>().shake = 1;
-
-
-                //미스시에 패널티
-                player.GetComponent<Player>().PlayerScaleUp();
-            }
-        }
     }
 
     void GameTime()
